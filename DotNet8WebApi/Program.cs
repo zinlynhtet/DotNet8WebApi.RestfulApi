@@ -1,6 +1,9 @@
 using DotNet8WebApi.AppDbContext;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using NUlid;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(opts =>
-{ 
+{
     string? connectionString = builder.Configuration.GetConnectionString("DbConnection");
     opts.UseSqlServer(connectionString);
 },
