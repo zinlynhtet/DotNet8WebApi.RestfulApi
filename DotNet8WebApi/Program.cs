@@ -1,8 +1,8 @@
 using DotNet8WebApi.AppDbContext;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,23 +23,33 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 ServiceLifetime.Transient,
 ServiceLifetime.Transient);
 
-var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-var key = Encoding.ASCII.GetBytes(tokenOptions.Secret);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-       .AddJwtBearer(options =>
-       {
-           options.TokenValidationParameters = new TokenValidationParameters
-           {
-               ValidateIssuer = true,
-               ValidateAudience = true,
-               ValidateLifetime = true,
-               ValidateIssuerSigningKey = true,
-               ValidIssuer = tokenOptions.Issuer,
-               ValidAudience = tokenOptions.Audience,
-               IssuerSigningKey = new SymmetricSecurityKey(key),
-           };
-       });
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,7 +58,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseAuthentication();
 
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
