@@ -1,8 +1,13 @@
 ﻿using DotNet8WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NUlid;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Security.Claims;
+using System.Text;
 
 namespace DotNet8WebApi.Controllers
 {
@@ -17,7 +22,38 @@ namespace DotNet8WebApi.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpPost, Route("login")]
+        public IActionResult Login(LoginDTO _auth)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_auth.UserName) || string.IsNullOrEmpty(_auth.Password))
+                    return BadRequest("Username and/or Password not specified");
+
+                if (_auth.UserName.Equals("mack") && _auth.Password.Equals("mack1234"))
+                {
+                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"));
+                    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                    var jwtSecurityToken = new JwtSecurityToken(
+                        issuer: "ABCXYZ",
+                        audience: "http://localhost:51398",
+                        claims: new List<Claim>(),
+                        expires: DateTime.Now.AddMinutes(10),
+                        signingCredentials: signinCredentials
+                    );
+
+                    return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
+                }
+            }
+            catch
+            {
+                return BadRequest("An error occurred in generating the token");
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet(Name = "BlogList"), Authorize]
         public IActionResult BlogList()
         {
             List<BlogDataModel> blogList = _context.Data.ToList();
