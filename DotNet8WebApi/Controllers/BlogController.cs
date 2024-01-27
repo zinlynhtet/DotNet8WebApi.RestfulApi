@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using NUlid;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 
@@ -13,6 +11,8 @@ namespace DotNet8WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+
     public class BlogController : ControllerBase
     {
         private readonly AppDbContext.AppDbContext _context;
@@ -23,6 +23,7 @@ namespace DotNet8WebApi.Controllers
         }
 
         [HttpPost, Route("login")]
+        [AllowAnonymous]
         public IActionResult Login(LoginDTO _auth)
         {
             try
@@ -32,11 +33,11 @@ namespace DotNet8WebApi.Controllers
 
                 if (_auth.UserName.Equals("mack") && _auth.Password.Equals("mack1234"))
                 {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"));
+                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SU57Ie4vseXyJeUUSL6y8Z1QMFRMb2ZN"));
                     var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                     var jwtSecurityToken = new JwtSecurityToken(
-                        issuer: "ABCXYZ",
-                        audience: "http://localhost:51398",
+                        issuer: "https://localhost:7091",
+                        audience: "https://localhost:7091",
                         claims: new List<Claim>(),
                         expires: DateTime.Now.AddMinutes(10),
                         signingCredentials: signinCredentials
@@ -45,15 +46,15 @@ namespace DotNet8WebApi.Controllers
                     return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error occurred in generating the token");
+                return BadRequest("An error occurred in generating the token" + ex.ToString());
             }
 
             return Unauthorized();
         }
 
-        [HttpGet(Name = "BlogList"), Authorize]
+        [HttpGet]
         public IActionResult BlogList()
         {
             List<BlogDataModel> blogList = _context.Data.ToList();
