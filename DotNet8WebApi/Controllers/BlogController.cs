@@ -13,7 +13,6 @@ namespace DotNet8WebApi.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-
     public class BlogController : ControllerBase
     {
         private readonly AppDbContext.AppDbContext _context;
