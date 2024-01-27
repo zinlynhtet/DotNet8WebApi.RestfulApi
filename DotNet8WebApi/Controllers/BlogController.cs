@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using NUlid;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,10 +17,12 @@ namespace DotNet8WebApi.Controllers
     public class BlogController : ControllerBase
     {
         private readonly AppDbContext.AppDbContext _context;
+        private readonly ILogger<BlogController> _logger;
 
-        public BlogController(AppDbContext.AppDbContext context)
+        public BlogController(AppDbContext.AppDbContext context, ILogger<BlogController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpPost, Route("login")]
@@ -58,6 +61,7 @@ namespace DotNet8WebApi.Controllers
         public IActionResult BlogList()
         {
             List<BlogDataModel> blogList = _context.Data.ToList();
+            _logger.LogInformation("GetBlogList =>" + JsonConvert.SerializeObject(blogList, Formatting.Indented));
             return Ok(blogList);
         }
 
@@ -103,7 +107,7 @@ namespace DotNet8WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BlogCreateAsync(BlogDataModel reqModel)
+        public async Task<IActionResult> BlogCreate(BlogDataModel reqModel)
         {
             reqModel.Blog_Id = Ulid.NewUlid().ToString();
             await _context.Data.AddAsync(reqModel);
