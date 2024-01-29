@@ -12,7 +12,7 @@ namespace DotNet8WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class BlogController : ControllerBase
     {
         private readonly AppDbContext.AppDbContext _context;
@@ -24,37 +24,37 @@ namespace DotNet8WebApi.Controllers
             _logger = logger;
         }
 
-        [HttpPost, Route("login")]
-        [AllowAnonymous]
-        public IActionResult Login(LoginDTO _auth)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(_auth.UserName) || string.IsNullOrEmpty(_auth.Password))
-                    return BadRequest("Username and/or Password not specified");
+        //[HttpPost, Route("login")]
+        //[AllowAnonymous]
+        //public IActionResult Login(LoginDTO _auth)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(_auth.UserName) || string.IsNullOrEmpty(_auth.Password))
+        //            return BadRequest("Username and/or Password not specified");
 
-                if (_auth.UserName.Equals("mack") && _auth.Password.Equals("mack1234"))
-                {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SU57Ie4vseXyJeUUSL6y8Z1QMFRMb2ZN"));
-                    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                    var jwtSecurityToken = new JwtSecurityToken(
-                        issuer: "https://localhost:7091",
-                        audience: "https://localhost:7091",
-                        claims: new List<Claim>(),
-                        expires: DateTime.Now.AddMinutes(10),
-                        signingCredentials: signinCredentials
-                    );
+        //        if (_auth.UserName.Equals("mack") && _auth.Password.Equals("mack1234"))
+        //        {
+        //            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SU57Ie4vseXyJeUUSL6y8Z1QMFRMb2ZN"));
+        //            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+        //            var jwtSecurityToken = new JwtSecurityToken(
+        //                issuer: "https://localhost:7091",
+        //                audience: "https://localhost:7091",
+        //                claims: new List<Claim>(),
+        //                expires: DateTime.Now.AddMinutes(10),
+        //                signingCredentials: signinCredentials
+        //            );
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("An error occurred in generating the token" + ex.ToString());
-            }
+        //            return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest("An error occurred in generating the token" + ex.ToString());
+        //    }
 
-            return Unauthorized();
-        }
+        //    return Unauthorized();
+        //}
 
         [HttpGet]
         public IActionResult BlogList()
