@@ -14,9 +14,11 @@ namespace HttpClientExamples.HttpClientExample
     {
         public async Task Run()
         {
-            //await BlogGetList();
-            await BlogGetById("01HN3GNMVGDTKYB17EGFCPCBDG");
-            await BlogCreate("HttpClient", "HttpClient", "HttpClient");
+            await BlogGetList();
+            //await BlogGetById("01HN3GNMVGDTKYB17EGFCPCBDG");
+            await BlogDelete("01HNB5W3KH6SW7MSXKE2R8PY0P");
+            //await BlogCreate("HttpClient", "HttpClient", "HttpClient");
+            //await BlogPut("01HN3GNMVGDTKYB17EGFCPCBDG", "Put", "Put", "Put");
         }
         public async Task BlogGetList()
         {
@@ -62,7 +64,7 @@ namespace HttpClientExamples.HttpClientExample
             {
                 Blog_Title = title,
                 Blog_Author = author,
-                Blog_Content= content
+                Blog_Content = content
             };
             string jsonBlog = JsonConvert.SerializeObject(reqModel);
             HttpContent httpContent = new StringContent(jsonBlog, Encoding.UTF8, Application.Json);
@@ -75,7 +77,65 @@ namespace HttpClientExamples.HttpClientExample
                 var model = JsonConvert.DeserializeObject<BlogDataResponseModel>(jsonStr);
                 await Console.Out.WriteLineAsync(model!.Message);
             }
-            
+        }
+        public async Task BlogPut(string id, string title, string author, string content)
+        {
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7091/api/");
+            var response = await client.GetAsync($"blog/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                BlogViewModel reqModel = new BlogViewModel
+                {
+                    Blog_Title = title,
+                    Blog_Author = author,
+                    Blog_Content = content
+                };
+
+                string jsonBlog = JsonConvert.SerializeObject(reqModel);
+                HttpContent httpContent = new StringContent(jsonBlog, Encoding.UTF8, Application.Json);
+                var response1 = await client.PutAsync($"blog/{id}", httpContent);
+                if (response1.IsSuccessStatusCode)
+                {
+                    string jsonStr = await response.Content.ReadAsStringAsync();
+                    var model = JsonConvert.DeserializeObject<BlogDataResponseModel>(jsonStr);
+                    await Console.Out.WriteLineAsync(model!.Message);
+                }
+                else
+                {
+                    string jsonStr = await response.Content.ReadAsStringAsync();
+                    var model = JsonConvert.DeserializeObject<BlogDataResponseModel>(jsonStr);
+                    await Console.Out.WriteLineAsync(model!.Message);
+                }
+            }
+            else
+            {
+                await Console.Out.WriteLineAsync("Not found.");
+            }
+
+        }
+        public async Task BlogPatch(string id, string title, string author, string content)
+        {
+
+        }
+
+        public async Task BlogDelete(string id)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:7091/api/");
+            HttpResponseMessage response = await client.DeleteAsync($"blog/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(message);
+            }
+            else
+            {
+                string jsonStr = await response.Content.ReadAsStringAsync();
+                var model = JsonConvert.DeserializeObject<BlogDataResponseModel>(jsonStr);
+                Console.WriteLine(model.Message);
+            }
         }
     }
 }
