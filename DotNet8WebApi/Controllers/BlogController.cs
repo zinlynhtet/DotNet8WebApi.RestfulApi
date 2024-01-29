@@ -106,16 +106,23 @@ namespace DotNet8WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BlogCreate(BlogDataModel reqModel)
+        public async Task<IActionResult> BlogCreate(BlogViewModel reqModel)
         {
-            reqModel.Blog_Id = Ulid.NewUlid().ToString();
-            await _context.Data.AddAsync(reqModel);
+            var blogModel = new BlogDataModel
+            {
+                Blog_Title = reqModel.Blog_Title,
+                Blog_Author = reqModel.Blog_Author,
+                Blog_Content = reqModel.Blog_Content,
+                Blog_Id = Ulid.NewUlid().ToString()
+            };
+
+            await _context.Data.AddAsync(blogModel);
             var result = await _context.SaveChangesAsync();
             var model = new BlogDataResponseModel
             {
                 IsSuccess = result > 0,
                 Message = result > 0 ? "Saving Successful." : "Saving Failed.",
-                Data = reqModel
+                Data = blogModel
             };
             return Ok(model);
         }
