@@ -140,6 +140,7 @@ namespace DotNet8WebApi.Controllers
                 };
                 return NotFound(model1);
             }
+            item.Blog_Id = id;
             item.Blog_Title = reqModel.Blog_Title;
             item.Blog_Author = reqModel.Blog_Author;
             item.Blog_Content = reqModel.Blog_Content;
