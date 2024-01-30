@@ -1,4 +1,5 @@
 using DotNet8WebApi.AppDbContext;
+using DotNet8WebApi.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -90,10 +91,9 @@ try
         app.UseSwaggerUI();
     }
     app.UseAuthentication();
-
+    app.UseJwtDecryptionMiddleware();
     app.UseAuthorization();
     app.UseHttpsRedirection();
-
     app.MapControllers();
 
     app.Run();

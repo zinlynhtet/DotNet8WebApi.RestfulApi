@@ -14,8 +14,8 @@ namespace HttpClientExamples.HttpClientExample
     {
         public async Task Run()
         {
-            //await BlogGetList();
-            await BlogGetById("01HNB5Q71843SKGY5VWWP654V4");
+            await BlogGetList();
+            //await BlogGetById("01HNB5Q71843SKGY5VWWP654V4");
             //await BlogDelete("01HNB5Q71843SKGY5VWWP654V4");
             //await BlogPatch("01HNB5Q71843SKGY5VWWP654V4", "Patch", "Patch", "Patch");
             //await BlogCreate("HttpClient", "HttpClient", "HttpClient");
