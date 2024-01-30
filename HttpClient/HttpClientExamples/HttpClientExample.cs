@@ -24,7 +24,8 @@ namespace HttpClientExamples.HttpClientExample
         public async Task BlogGetList()
         {
             HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://localhost:7091/api/blog");
+            client.BaseAddress = new Uri("https://localhost:7091/api/");
+            var response = await client.GetAsync("blog");
             if (response.IsSuccessStatusCode)
             {
                 string jsonStr = await response.Content.ReadAsStringAsync();
@@ -42,7 +43,8 @@ namespace HttpClientExamples.HttpClientExample
         public async Task BlogGetById(string id)
         {
             HttpClient client = new HttpClient();
-            var response = await client.GetAsync($"https://localhost:7091/api/blog/{id}");
+            client.BaseAddress = new Uri("https://localhost:7091/api/");
+            var response = await client.GetAsync($"blog/{id}");
             if (response.IsSuccessStatusCode)
             {
                 string jsonStr = await response.Content.ReadAsStringAsync();
