@@ -1,4 +1,5 @@
-﻿using DotNet8WebApi.Models;
+﻿using DotNet8WebApi.Features.Blogs;
+using DotNet8WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +17,7 @@ namespace DotNet8WebApi.Controllers
     {
         private readonly AppDbContext.AppDbContext _context;
         private readonly ILogger<BlogController> _logger;
-
+        private readonly List<BlogFakerModel> FData = new List<BlogFakerModel>();
         public BlogController(AppDbContext.AppDbContext context, ILogger<BlogController> logger)
         {
             _context = context;
@@ -27,6 +28,7 @@ namespace DotNet8WebApi.Controllers
         [HttpGet]
         public IActionResult BlogList()
         {
+            //List<BlogFakerModel> blogList = FData.ToList();
             List<BlogDataModel> blogList = _context.Data.ToList();
             _logger.LogInformation("GetBlogList =>" + JsonConvert.SerializeObject(blogList, Formatting.Indented));
             return Ok(blogList);
@@ -73,6 +75,18 @@ namespace DotNet8WebApi.Controllers
             };
             return Ok(model);
         }
+
+        //[HttpPost]
+        //[ActionName("CreateBlog")]
+        //public IActionResult CreateBlog(int count)
+        //{
+        //    var blogFaker = new BlogFakerExample();
+
+        //    var blogs = blogFaker.Generate(count);
+        //    FData.AddRange(blogs);
+        //    Console.WriteLine(JsonConvert.SerializeObject(blogs, Formatting.Indented));
+        //    return Ok(blogs);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> BlogCreate(BlogViewModel reqModel)
