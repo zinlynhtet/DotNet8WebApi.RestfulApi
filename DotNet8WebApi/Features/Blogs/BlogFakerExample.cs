@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using DotNet8WebApi.Models;
 
 namespace DotNet8WebApi.Features.Blogs
 {

@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet8WebApi.Middlewares
 {
-    public class JwtTokenDecryptionMiddleware
+    public class JwtAuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public JwtTokenDecryptionMiddleware(RequestDelegate next)
+        public JwtAuthorizationMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -48,7 +48,7 @@ namespace DotNet8WebApi.Middlewares
     {
         public static IApplicationBuilder UseJwtDecryptionMiddleware(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<JwtTokenDecryptionMiddleware>();
+            return builder.UseMiddleware<JwtAuthorizationMiddleware>();
         }
     }
 }

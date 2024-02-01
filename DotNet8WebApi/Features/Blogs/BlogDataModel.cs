@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DotNet8WebApi.Models
+namespace DotNet8WebApi.Features.Blogs
 {
     [Table("Blog")]
     public class BlogDataModel
@@ -13,21 +13,19 @@ namespace DotNet8WebApi.Models
         public string? Blog_Title { get; set; }
         public string? Blog_Author { get; set; }
         public string? Blog_Content { get; set; }
-
     }
+
     public class BlogListModel
     {
-            public bool IsSuccess { get; set; }
-            public string Message { get; set; }
-            public List<BlogDataModel> Data { get; set; }
-       
-
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; }
+        public List<BlogDataModel> Data { get; set; }
     }
+
     public class BlogViewModel
     {
         public string? Blog_Title { get; set; }
         public string? Blog_Author { get; set; }
         public string? Blog_Content { get; set; }
-
     }
 }

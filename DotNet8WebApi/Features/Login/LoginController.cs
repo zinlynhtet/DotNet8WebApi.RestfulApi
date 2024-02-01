@@ -1,25 +1,25 @@
-﻿using DotNet8WebApi.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DotNet8WebApi.Controllers
+namespace DotNet8WebApi.Features.Login
 {
+    [Route("api/[controller]")]
     public class LoginController : Controller
     {
-        [HttpPost, Route("login")]
+        [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login(LoginDTO _auth)
+        public IActionResult Login(LoginDataModel loginRequestModel)
         {
             try
             {
-                if (string.IsNullOrEmpty(_auth.UserName) || string.IsNullOrEmpty(_auth.Password))
-                    return BadRequest("Username and/or Password not specified");
+                if (string.IsNullOrEmpty(loginRequestModel.UserName) || string.IsNullOrEmpty(loginRequestModel.Password))
+                    return BadRequest("Username or Password not specified");
 
-                if (_auth.UserName.Equals("mack") && _auth.Password.Equals("mack1234"))
+                if (loginRequestModel.UserName.Equals("mack") && loginRequestModel.Password.Equals("mack1234"))
                 {
                     var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SU57Ie4vseXyJeUUSL6y8Z1QMFRMb2ZN"));
                     var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -28,8 +28,8 @@ namespace DotNet8WebApi.Controllers
                         audience: "https://localhost:7091",
                         claims: new List<Claim>
                         {
-                            new Claim(ClaimTypes.Name, _auth.UserName),
-                            GetRoleClaim(_auth.UserName),
+                            new Claim(ClaimTypes.Name, loginRequestModel.UserName),
+                            GetRoleClaim(loginRequestModel.UserName),
                         },
                         expires: DateTime.Now.AddMinutes(10),
                         signingCredentials: signinCredentials
@@ -44,24 +44,19 @@ namespace DotNet8WebApi.Controllers
 
             return Unauthorized();
         }
-        private Claim GetRoleClaim(string username)
+
+        private Claim GetRoleClaim(string userName)
         {
-            var roles = DetermineRoles(username);
+            var roles = DetermineRoles(userName);
             var identity = new ClaimsIdentity();
             identity.AddClaims(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             return identity.Claims.First();
         }
+
         private IEnumerable<string> DetermineRoles(string username)
         {
-            if (username == "mack")
-            {
-                return new List<string> { "Admin" };
-            }
-            else
-            {
-                return new List<string> { "User" };
-            }
+            return new List<string> { username == "mack" ? "Admin" : "User" };
         }
     }
 }

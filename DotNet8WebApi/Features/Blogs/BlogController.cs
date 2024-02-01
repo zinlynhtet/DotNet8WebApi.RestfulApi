@@ -1,5 +1,4 @@
-﻿using DotNet8WebApi.Features.Blogs;
-using DotNet8WebApi.Models;
+﻿using DotNet8WebApi.EFDbContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -9,20 +8,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DotNet8WebApi.Controllers
+namespace DotNet8WebApi.Features.Blogs
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BlogController : ControllerBase
+    public class BlogController(AppDbContext context, ILogger<BlogController> logger) : ControllerBase
     {
-        private readonly AppDbContext.AppDbContext _context;
-        private readonly ILogger<BlogController> _logger;
+        private readonly AppDbContext _context = context;
+        private readonly ILogger<BlogController> _logger = logger;
         private readonly List<BlogFakerModel> FData = new List<BlogFakerModel>();
-        public BlogController(AppDbContext.AppDbContext context, ILogger<BlogController> logger)
-        {
-            _context = context;
-            _logger = logger;
-        }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -184,7 +178,6 @@ namespace DotNet8WebApi.Controllers
             _context.Data.Remove(item);
             var result = await _context.SaveChangesAsync();
             return Ok(result > 0 ? "Deleting Successful." : "Deleting Failed.");
-
         }
     }
 }

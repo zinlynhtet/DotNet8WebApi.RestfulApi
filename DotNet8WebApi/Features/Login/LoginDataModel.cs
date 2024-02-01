@@ -1,6 +1,6 @@
-﻿namespace DotNet8WebApi.Models
+﻿namespace DotNet8WebApi.Features.Login
 {
-    public class LoginDTO
+    public class LoginDataModel
     {
         public string UserName { get; set; } = "mack";
         public string Password { get; set; } = "mack1234";

@@ -1,4 +1,4 @@
-﻿namespace DotNet8WebApi.Models
+﻿namespace DotNet8WebApi.Features.Blogs
 {
     public class BlogDataResponseModel
     {
@@ -6,6 +6,7 @@
         public string Message { get; set; }
         public BlogDataModel Data { get; set; }
     }
+
     public class BlogResponseModel
     {
         public int PageNo { get; set; }

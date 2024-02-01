@@ -1,4 +1,4 @@
-using DotNet8WebApi.AppDbContext;
+using DotNet8WebApi.EFDbContext;
 using DotNet8WebApi.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
