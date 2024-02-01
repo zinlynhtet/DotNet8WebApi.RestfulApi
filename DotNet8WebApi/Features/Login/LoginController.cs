@@ -8,8 +8,10 @@ using System.Text;
 namespace DotNet8WebApi.Features.Login
 {
     [Route("api/[controller]")]
-    public class LoginController : Controller
+    public class LoginController(IConfiguration configuration) : Controller
     {
+        private readonly IConfiguration _configuration = configuration;
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Login(LoginDataModel loginRequestModel)
@@ -17,32 +19,36 @@ namespace DotNet8WebApi.Features.Login
             try
             {
                 if (string.IsNullOrEmpty(loginRequestModel.UserName) || string.IsNullOrEmpty(loginRequestModel.Password))
-                    return BadRequest("Username or Password not specified");
+                    return BadRequest("Username or Password is wrong.");
 
-                if (loginRequestModel.UserName.Equals("mack") && loginRequestModel.Password.Equals("mack1234"))
-                {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SU57Ie4vseXyJeUUSL6y8Z1QMFRMb2ZN"));
-                    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                    var jwtSecurityToken = new JwtSecurityToken(
-                        issuer: "https://localhost:7091",
-                        audience: "https://localhost:7091",
-                        claims: new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, loginRequestModel.UserName),
-                            GetRoleClaim(loginRequestModel.UserName),
-                        },
-                        expires: DateTime.Now.AddMinutes(10),
-                        signingCredentials: signinCredentials
-                    );
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken));
-                }
+                if (loginRequestModel.UserName.Equals("mack") && !loginRequestModel.Password.Equals("mack1234"))
+                    return BadRequest("Username or Password is wrong.");
+
+                return Ok(GenerateToken(loginRequestModel.UserName));
             }
             catch (Exception ex)
             {
                 return BadRequest("An error occurred in generating the token" + ex.ToString());
             }
+        }
 
-            return Unauthorized();
+        [HttpGet("{userName}")]
+        public string GenerateToken(string userName)
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value!));
+            var signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _configuration.GetSection("Jwt:Issuer").Value!,
+                audience: _configuration.GetSection("Jwt:Audience").Value!,
+                claims: new List<Claim>
+                {
+                            new Claim(ClaimTypes.Name, userName),
+                            GetRoleClaim(userName),
+                },
+                expires: DateTime.Now.AddMinutes(10),
+                signingCredentials: signInCredentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
         }
 
         private Claim GetRoleClaim(string userName)

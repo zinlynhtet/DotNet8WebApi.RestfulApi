@@ -1,50 +1,52 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace DotNet8WebApi.Middlewares
 {
-    public class JwtAuthorizationMiddleware
+    public class JwtAuthorizationMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public JwtAuthorizationMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task Invoke(HttpContext context)
         {
             var token = context.Request.Headers["Authorization"].ToString();
 
-            if (!string.IsNullOrEmpty(token) && token.StartsWith("Bearer "))
+            if (string.IsNullOrEmpty(token))
             {
-                token = token.Substring("Bearer ".Length);
-
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                if (jsonToken != null)
-                {
-                    Console.WriteLine("Decrypted Token Claims:");
-                    foreach (var claim in jsonToken.Claims)
-                    {
-                        Console.WriteLine($"{claim.Type}: {claim.Value} : {claim.Issuer}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Unable to decode the JWT token.");
-                }
+                goto result;
             }
 
+            token = token.Substring("Bearer ".Length);
+
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken is null)
+            {
+                Console.WriteLine("Unable to decode the JWT token.");
+                goto result;
+            }
+
+            Console.WriteLine("Decrypted Token Claims:");
+            var lst = jsonToken.Claims.Select(claim => new
+            {
+                Type = claim.Type,
+                Value = claim.Value,
+                Issuer = claim.Issuer
+            }).ToList();
+            Console.WriteLine(JsonConvert.SerializeObject(lst, Formatting.Indented));
+
+        result:
             await _next(context);
         }
     }
 
-    public static class JwtDecryptionMiddlewareExtensions
+    public static class JwtAuthorizationMiddlewareExtensions
     {
         public static IApplicationBuilder UseJwtDecryptionMiddleware(this IApplicationBuilder builder)
         {
