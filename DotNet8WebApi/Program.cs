@@ -9,10 +9,11 @@ using Serilog;
 using System.Data.Common;
 using System.Text;
 
+string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs/RestApiLog.txt");
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/RestApiLog.txt", rollingInterval: RollingInterval.Minute)
+    .WriteTo.File(folderPath, rollingInterval: RollingInterval.Minute)
     .CreateLogger();
 try
 {
