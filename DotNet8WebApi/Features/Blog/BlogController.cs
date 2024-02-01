@@ -1,4 +1,5 @@
 ﻿using DotNet8WebApi.EFDbContext;
+using DotNet8WebApi.Features.Blogs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DotNet8WebApi.Features.Blogs
+namespace DotNet8WebApi.Features.Blog
 {
     [ApiController]
     [Route("api/[controller]")]

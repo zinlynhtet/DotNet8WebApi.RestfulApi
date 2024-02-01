@@ -1,6 +1,6 @@
 ﻿using NUlid;
 
-namespace DotNet8WebApi.Features.Blogs
+namespace DotNet8WebApi.Features.Blog
 {
     public class BlogFakerModel
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DotNet8WebApi.Features.Blogs
+namespace DotNet8WebApi.Features.Blog
 {
     [Table("Blog")]
     public class BlogDataModel
