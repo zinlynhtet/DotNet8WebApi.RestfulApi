@@ -1,4 +1,4 @@
-﻿using DotNet8WebApi.Features.Blogs;
+﻿using DotNet8WebApi.Features.Blog;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotNet8WebApi.EFDbContext;
