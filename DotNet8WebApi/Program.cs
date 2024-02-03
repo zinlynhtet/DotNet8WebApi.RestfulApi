@@ -1,5 +1,6 @@
 using DotNet8WebApi.EFDbContext;
 using DotNet8WebApi.Middlewares;
+using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ try
             ValidateIssuerSigningKey = true
         };
     });
-
+    builder.Services.AddFastEndpoints();
     builder.Services.AddAuthorization();
     var app = builder.Build();
 
@@ -94,7 +95,7 @@ try
     app.UseAuthorization();
     app.UseHttpsRedirection();
     app.MapControllers();
-
+    app.UseFastEndpoints();
     app.Run();
 }
 catch (Exception ex)
