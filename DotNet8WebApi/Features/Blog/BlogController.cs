@@ -1,5 +1,5 @@
 ﻿using DotNet8WebApi.EFDbContext;
-using DotNet8WebApi.Features.Blogs;
+using DotNet8WebApi.Features.Blog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
