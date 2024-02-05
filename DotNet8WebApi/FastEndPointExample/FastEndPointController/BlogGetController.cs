@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotNet8WebApi.FastEndpointExample.BlogGetController
 {
-    public class MyEndpoint : EndpointWithoutRequest<MyResponse>
+    public class MyEndpoint : EndpointWithoutRequest<BlogResponseModel>
     {
         private readonly AppDbContext _context;
 
@@ -17,26 +17,19 @@ namespace DotNet8WebApi.FastEndpointExample.BlogGetController
 
         public override void Configure()
         {
-            Get("/api/blog");
+            Get("/api/blogList");
             AllowAnonymous();
         }
 
-        public override Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(CancellationToken ct)
         {
-            //var blog = await _context.Data.FirstOrDefaultAsync();
-
-            //Response.Blog_Title = blog!.Blog_Title;
-            //Response.Blog_Author = blog.Blog_Author;
-            //Response.Blog_Content = blog.Blog_Content;
-
-            Response = new()
+            var lst = _context.Data.ToList();
+            await SendAsync(new()
             {
-                Blog_Title = "john doe",
-                Blog_Author = "Author",
-                Blog_Content = "Content"
-            };
-            return Task.CompletedTask;
+                Data = lst,
+                IsSuccess = lst!= null,
+                Message = "Success"
+            });
         }
-       
     }
 }
