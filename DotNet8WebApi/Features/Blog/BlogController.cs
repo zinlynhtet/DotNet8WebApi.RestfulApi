@@ -13,11 +13,17 @@ namespace DotNet8WebApi.Features.Blog
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BlogController(AppDbContext context, ILogger<BlogController> logger) : ControllerBase
+    public class BlogController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
-        private readonly ILogger<BlogController> _logger = logger;
+        private readonly AppDbContext _context;
+        private readonly ILogger<BlogController> _logger;
         private readonly List<BlogFakerModel> FData = new List<BlogFakerModel>();
+
+        public BlogController(AppDbContext context, ILogger<BlogController> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
