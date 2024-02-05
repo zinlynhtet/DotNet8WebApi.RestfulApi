@@ -8,7 +8,7 @@
         public string BlogContent { get; set; }
     }
 
-    public class BlogIdRequestModel
+    public class BlogDeleteRequestModel
     {
         public string Id { get; set; }
     }
