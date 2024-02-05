@@ -26,9 +26,9 @@ namespace DotNet8WebApi.FastEndpointExample.BlogGetController
             var lst = _context.Data.ToList();
             await SendAsync(new()
             {
-                Data = lst,
                 IsSuccess = lst!= null,
-                Message = "Success"
+                Message = "Success",
+                Data = lst
             });
         }
     }
