@@ -2,9 +2,14 @@
 {
     public class BlogRequestModel
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
         public string BlogTitle { get; set; }
         public string BlogAuthor { get; set; }
         public string BlogContent { get; set; }
+    }
+
+    public class BlogIdRequestModel
+    {
+        public string Id { get; set; }
     }
 }
