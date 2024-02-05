@@ -8,9 +8,14 @@ using System.Text;
 namespace DotNet8WebApi.Features.Login
 {
     [Route("api/[controller]")]
-    public class LoginController(IConfiguration configuration) : Controller
+    public class LoginController : Controller
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly IConfiguration _configuration;
+
+        public LoginController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         [HttpPost]
         [AllowAnonymous]
