@@ -1,16 +1,15 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
 
 namespace DotNet8WebApi.Middlewares
 {
-    public class JwtAuthorizationMiddleware(RequestDelegate next)
+    public class JwtAuthorizationMiddleware
     {
-        private readonly RequestDelegate _next = next;
+        private readonly RequestDelegate _next;
+        public JwtAuthorizationMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
 
         public async Task Invoke(HttpContext context)
         {
@@ -41,7 +40,7 @@ namespace DotNet8WebApi.Middlewares
             }).ToList();
             Console.WriteLine(JsonConvert.SerializeObject(lst, Formatting.Indented));
 
-        result:
+            result:
             await _next(context);
         }
     }
