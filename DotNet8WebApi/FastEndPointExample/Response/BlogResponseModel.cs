@@ -1,11 +1,15 @@
-﻿namespace DotNet8WebApi.FastEndpointExample.RequestAndResponse.Response
+﻿using DotNet8WebApi.Features.Blog;
+
+namespace DotNet8WebApi.FastEndpointExample.RequestAndResponse.Response
 {
     public class BlogResponseModel
     {
-        public string BlogData { get; set; }
-        public string BlogAuthor { get; set; }
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; }
+        public List<BlogDataModel> Data { get; set; }
     }
-    public class MyResponse
+
+    public class BlogViewResponseModel
     {
         public string? Blog_Title { get; set; }
         public string? Blog_Author { get; set; }
