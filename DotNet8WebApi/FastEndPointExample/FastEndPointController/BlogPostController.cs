@@ -16,8 +16,7 @@ namespace DotNet8WebApi.FastEndpointExample.BlogPostControllers
         {
             await SendAsync(new()
             {
-                BlogData = reqModel.BlogTitle + "," + reqModel.BlogContent,
-                BlogAuthor = reqModel.BlogAuthor,
+                
             });
         }
     }
