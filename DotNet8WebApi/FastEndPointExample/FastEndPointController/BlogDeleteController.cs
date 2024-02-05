@@ -3,10 +3,11 @@ using DotNet8WebApi.FastEndpointExample.RequestAndResponse.Request;
 using DotNet8WebApi.FastEndpointExample.RequestAndResponse.Response;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNet8WebApi.FastEndpointExample.BlogDeleteController
 {
-    public class MyEndpoint : Endpoint<BlogIdRequestModel,BlogResponseModel>
+    public class MyEndpoint : Endpoint<BlogDeleteRequestModel, BlogResponseModel>
     {
         private readonly AppDbContext _context;
 
@@ -17,17 +18,19 @@ namespace DotNet8WebApi.FastEndpointExample.BlogDeleteController
 
         public override void Configure()
         {
-            Delete("/api/blog/{Id}");
+            Post("/api/blog/");
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(BlogIdRequestModel reqId, CancellationToken ct)
+        public override async Task HandleAsync(BlogDeleteRequestModel reqModel, CancellationToken ct)
         {
-            var item = await _context.Data.FindAsync(reqId);
-            // _context.Remove(item);
+            var item = await _context.Data.FirstOrDefaultAsync(x => x.Blog_Id == reqModel.Id);
+            _context.Data.Remove(item);
+            var result = await _context.SaveChangesAsync();
             await SendAsync(new BlogResponseModel()
             {
-               IsSuccess = item != null,
+                IsSuccess = result > 0,
+                Message = result > 0 ? "Success." : "Failed."
             });
         }
     }
