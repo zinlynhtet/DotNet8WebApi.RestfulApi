@@ -35,29 +35,29 @@ namespace DotNet8WebApi.Features.Blog
             return Ok(blogList);
         }
 
-        [Authorize(Roles = "User")]
-        [HttpGet("{id}")]
-        public IActionResult BlogList(string id)
-        {
-            var item = _context.Data.FirstOrDefault(x => x.Blog_Id == id);
-            if (item == null)
-            {
-                BlogDataResponseModel model1 = new BlogDataResponseModel
-                {
-                    IsSuccess = false,
-                    Message = "No Data Found"
-                };
-                return NotFound(model1);
-            }
+        //[Authorize(Roles = "User")]
+        //[HttpGet("{id}")]
+        //public IActionResult BlogList(string id)
+        //{
+        //    var item = _context.Data.FirstOrDefault(x => x.Blog_Id == id);
+        //    if (item == null)
+        //    {
+        //        BlogDataResponseModel model1 = new BlogDataResponseModel
+        //        {
+        //            IsSuccess = false,
+        //            Message = "No Data Found"
+        //        };
+        //        return NotFound(model1);
+        //    }
 
-            BlogDataResponseModel model = new BlogDataResponseModel
-            {
-                IsSuccess = true,
-                Message = "Success.",
-                Data = item
-            };
-            return Ok(model);
-        }
+        //    BlogDataResponseModel model = new BlogDataResponseModel
+        //    {
+        //        IsSuccess = true,
+        //        Message = "Success.",
+        //        Data = item
+        //    };
+        //    return Ok(model);
+        //}
 
         [HttpGet("{pageNo}/{pageSize}")]
         public IActionResult GetByPagination(int pageNo, int pageSize)
@@ -173,18 +173,18 @@ namespace DotNet8WebApi.Features.Blog
             return Ok(model);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> BlogDelete(string id)
-        {
-            var item = _context.Data.FirstOrDefault(x => x.Blog_Id == id);
-            if (item is null)
-            {
-                var response = new { IsSuccess = false, Message = "No data found." };
-                return NotFound(response);
-            }
-            _context.Data.Remove(item);
-            var result = await _context.SaveChangesAsync();
-            return Ok(result > 0 ? "Deleting Successful." : "Deleting Failed.");
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> BlogDelete(string id)
+        //{
+        //    var item = _context.Data.FirstOrDefault(x => x.Blog_Id == id);
+        //    if (item is null)
+        //    {
+        //        var response = new { IsSuccess = false, Message = "No data found." };
+        //        return NotFound(response);
+        //    }
+        //    _context.Data.Remove(item);
+        //    var result = await _context.SaveChangesAsync();
+        //    return Ok(result > 0 ? "Deleting Successful." : "Deleting Failed.");
+        //}
     }
 }
