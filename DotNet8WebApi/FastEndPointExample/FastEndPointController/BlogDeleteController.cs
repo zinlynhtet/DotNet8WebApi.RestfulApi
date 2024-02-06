@@ -2,12 +2,12 @@
 using DotNet8WebApi.FastEndpointExample.RequestAndResponse.Request;
 using DotNet8WebApi.FastEndpointExample.RequestAndResponse.Response;
 using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotNet8WebApi.FastEndpointExample.BlogDeleteController
 {
-    public class MyEndpoint : Endpoint<BlogDeleteRequestModel, BlogResponseModel>
+    public class MyEndpoint : EndpointWithoutRequest<BlogResponseModel>
     {
         private readonly AppDbContext _context;
 
@@ -18,13 +18,15 @@ namespace DotNet8WebApi.FastEndpointExample.BlogDeleteController
 
         public override void Configure()
         {
-            Post("/api/blog/");
+            Delete("/api/blog/{id}");
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(BlogDeleteRequestModel reqModel, CancellationToken ct)
+        public override async Task HandleAsync(CancellationToken ct)
         {
-            var item = await _context.Data.FirstOrDefaultAsync(x => x.Blog_Id == reqModel.Id);
+            string id = Route<string>("id")!;
+            //string id = HttpContext.Request.RouteValues.GetValueOrDefault("id")!.ToString()!;
+            var item = await _context.Data.FirstOrDefaultAsync(x => x.Blog_Id == id);
             _context.Data.Remove(item);
             var result = await _context.SaveChangesAsync();
             await SendAsync(new BlogResponseModel()
